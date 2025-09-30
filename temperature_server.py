@@ -18,6 +18,7 @@ PINS = {
 }
 LOG_INTERVAL = 60  # seconds
 DATA_DIR = "data"
+TEMPERATURE_OFFSET = -4 # Temperature offset to compensate for sensor innacuracy
 # ====================
 
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -70,6 +71,7 @@ HTML = """
       <th>{{ avg_hum }}</th>
     </tr>
   </table>
+  <h3> Sensor offset: {{TEMPERATURE_OFFSET}} ºC</h3>
 
   <div class="date-box">
     <form method="get" action="/">
@@ -113,7 +115,7 @@ def read_sensors():
         if humidity is None or temperature is None:
             t, h = "Error", "Error"
         else:
-            t, h = round(temperature, 1), round(humidity, 1)
+            t, h = round(temperature, 1) + TEMPERATURE_OFFSET, round(humidity, 1)
             temps.append(t)
             hums.append(h)
         sensor_data.append((name, t, h))
@@ -141,7 +143,8 @@ def index():
         sensor_data=sensor_data,
         avg_temp=avg_temp,
         avg_hum=avg_hum,
-        selected_date=selected_date
+        selected_date=selected_date,
+        TEMPERATURE_OFFSET=TEMPERATURE_OFFSET
     )
 
 @app.route("/plot.png")
