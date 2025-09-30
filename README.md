@@ -23,9 +23,10 @@ python3 temperature_server.py
 
 Or create a systemd service as shown in section "Start on boot".
 
-## View data
-
-Go to http://\<ip-of-device-running-server\>:5000/
+Open your browser at:
+```
+http://<ip-of-device-running-server>:5000/
+```
 
 ## Start on boot
 
