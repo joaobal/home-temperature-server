@@ -1,28 +1,66 @@
-# My Project Template
+# Home Temperature Server
 
-This is a template for new projects.
+Temperature and humidity measurement and analysis server. Tested on an RPi connected to two DHT11 sensors.
 
-## Getting Started
+<div align="center">
+    <img width="600" alt="image" src="https://github.com/user-attachments/assets/f6829f3d-97c3-4e5d-99d0-b380b7206714" />
+</div>
 
-1.  Create a new repository from this template.
-2.  Clone your new repository.
-3.  Manually create the `dev` branch:
-    ```bash
-    git checkout -b dev
-    git push --set-upstream origin dev
-    git checkout master
-    ```
-4.  Follow the project-specific setup instructions below.
+## Dependencies
 
-## Branching Strategy
+```
+sudo apt-get update
+sudo apt-get install -y python3 python3-pip python3-dev python3-matplotlib
+pip3 install flask Adafruit_DHT pandas numpy
+```
 
-GitFlow:
+## Start server
 
-- master: This branch always reflects a production-ready state. Only release-ready code is merged here.
-- dev: This is the primary development branch where all completed features are merged. It represents the latest delivered development changes for the next release.
-- feature/*: These branches are created from dev for working on new features. They are merged back into dev when the feature is complete.
-- release/*: When dev has enough features for a release (or a release date is approaching), a release branch is created from dev. This branch is used for final testing, bug fixes, and preparing release metadata. Once ready, it's merged into master (and tagged) and also back into dev (to incorporate any bug fixes made in the release branch).
-- hotfix/: These branches are created from master to quickly patch production issues. Once fixed, the hotfix is merged back into both master and dev (or the current release branch).
+Simply run the script
+```
+python3 temperature_server.py 
+```
 
-## Further Setup
-(Add any further instructions here)
+Or create a systemd service as shown in section "Start on boot".
+
+Open your browser at:
+```
+http://<ip-of-device-running-server>:5000/
+```
+
+## Start on boot
+
+Create .service file in `/etc/systemd/system/dht11.service`:
+```
+[Unit]
+Description=DHT11 Temperature & Humidity Reader
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/Code/temp-sensor/temperature_server_v2.py
+WorkingDirectory=/home/pi/Code/temp-sensor
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Reload the daemon and start the service:
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable dht11.service
+sudo systemctl start dht11.service
+```
+
+## Reset data:
+
+Remove contents of data/ folder, where there is a csv for each day of data.
+
+```
+rm data/*
+```
+
