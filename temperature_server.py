@@ -160,7 +160,7 @@ def plot_png():
     ax1.set_xticks(np.arange(0, 25, 1))  # show every 2 hours
 
     # Left Y-axis for Temperature
-    ax1.set_ylim(10, 30)
+    ax1.set_ylim(15, 26)
     ax1.set_ylabel("Temperature (°C)", color="red", fontsize=16)
     ax1.tick_params(axis="y", labelsize=13, colors="red")
 
@@ -170,7 +170,7 @@ def plot_png():
 
     # Right Y-axis for Humidity
     ax2 = ax1.twinx()
-    ax2.set_ylim(50, 90)
+    ax2.set_ylim(30, 70)
     ax2.set_ylabel("Humidity (%)", color="blue", fontsize=16)
     ax2.tick_params(axis="y", labelsize=13, colors="blue")
 
